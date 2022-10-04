@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../backend/backend_services.dart';
+import '../../urls.dart';
 import '../home.dart';
 import '../widgets/auth_text_field.dart';
 import 'signup.dart';
@@ -15,6 +17,23 @@ class _LogInScreenState extends State<LogInScreen> {
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey();
+  final BackendServices _backendServices = BackendServices();
+    logInMethod() async {
+    var result = await _backendServices.postRequest(
+      logInUrl,
+      {
+        "email": _email.text,
+        "password": _password.text,
+      },
+    );
+    if (result['status'] == "success") {
+      // ignore: use_build_context_synchronously
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+          (route) => false);
+    } else {}
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
