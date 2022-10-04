@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../backend/backend_services.dart';
+import '../../main.dart';
 import '../../urls.dart';
 import '../home.dart';
 import '../widgets/auth_text_field.dart';
@@ -19,6 +20,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _password = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey();
   final BackendServices _backendServices = BackendServices();
+
   signUPMethod() async {
     var result = await _backendServices.postRequest(
       signUpUrl,
@@ -29,6 +31,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
       },
     );
     if (result['status'] == "success") {
+      await sharedPreferences.setInt("id", result['data']['id']);
+      await sharedPreferences.setString("username", result['data']['username']);
+      await sharedPreferences.setString("email", result['data']['email']);
       // ignore: use_build_context_synchronously
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const HomeScreen()),
@@ -66,12 +71,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) => const HomeScreen()));
-                        },
-                        child: const Text("Sign up")),
+                      onPressed: signUPMethod(),
+                      child: const Text("Sign up"),
+                    ),
                     TextButton(
                         onPressed: () {
                           Navigator.of(context).pushReplacement(

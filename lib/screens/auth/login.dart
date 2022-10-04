@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../backend/backend_services.dart';
+import '../../main.dart';
 import '../../urls.dart';
 import '../home.dart';
 import '../widgets/auth_text_field.dart';
@@ -18,7 +19,7 @@ class _LogInScreenState extends State<LogInScreen> {
   final TextEditingController _password = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey();
   final BackendServices _backendServices = BackendServices();
-    logInMethod() async {
+  logInMethod() async {
     var result = await _backendServices.postRequest(
       logInUrl,
       {
@@ -27,6 +28,9 @@ class _LogInScreenState extends State<LogInScreen> {
       },
     );
     if (result['status'] == "success") {
+      await sharedPreferences.setInt("id", result['data']['id']);
+      await sharedPreferences.setString("username", result['data']['username']);
+      await sharedPreferences.setString("email", result['data']['email']);
       // ignore: use_build_context_synchronously
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const HomeScreen()),
@@ -63,12 +67,7 @@ class _LogInScreenState extends State<LogInScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) => const HomeScreen()));
-                        },
-                        child: const Text("Log in")),
+                        onPressed: logInMethod(), child: const Text("Log in")),
                     TextButton(
                         onPressed: () {
                           Navigator.of(context).pushReplacement(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moments/main.dart';
 
 import 'share_post.dart';
 
@@ -16,6 +17,14 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text("Home"),
         centerTitle: true,
+        leading: IconButton(
+          onPressed: () {
+            setState(() {
+              sharedPreferences.clear();
+            });
+          },
+          icon: const Icon(Icons.logout),
+        ),
       ),
       body: ListView(
         padding: const EdgeInsets.all(15),

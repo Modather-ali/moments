@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:moments/screens/home.dart';
 
 import 'screens/auth/signup.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+late SharedPreferences sharedPreferences;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  sharedPreferences = await SharedPreferences.getInstance();
   runApp(const MyApp());
 }
 
@@ -26,7 +32,9 @@ class MyApp extends StatelessWidget {
         ),
         primarySwatch: Colors.indigo,
       ),
-      home: const SignUpScreen(),
+      home: sharedPreferences.getInt("id") == null
+          ? const SignUpScreen()
+          : const HomeScreen(),
     );
   }
 }
